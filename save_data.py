@@ -1,9 +1,9 @@
 from supabase_config import supabase
 from datetime import datetime
 
-# Funktion zum Einfügen der Daten in die Supabase-Datenbank mit UPSERT
-def insert_data(table_name, data, conflict_column='id'):
-    response = supabase.table(table_name).upsert(data, on_conflict=[conflict_column]).execute()
+# Asynchronous function for inserting data
+async def insert_data(table_name, data, conflict_column='id'):
+    response = await supabase.table(table_name).upsert(data, on_conflict=[conflict_column]).execute()
     return response
 
 # Funktion zum Verarbeiten und Einfügen der Daten in Supabase
