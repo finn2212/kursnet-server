@@ -19,7 +19,6 @@ h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
 httpcore==1.0.5
-httpx==0.27.2
 hyperframe==6.0.1
 idna==2.10
 iniconfig==2.0.0
@@ -31,7 +30,6 @@ packaging==24.1
 pip==23.2.1
 pluggy==1.5.0
 postgrest==0.16.11
-postgrest-py==0.4.0
 psycopg2==2.9.9
 py==1.11.0
 pydantic==1.10.18
