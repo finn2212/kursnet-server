@@ -2,19 +2,22 @@ from flask import Flask, jsonify
 from fetch_data import get_data_from_page
 from save_data import process_data
 from count_pages import count_pages_bp  # Importiere das Blueprint
+from find_anbieter import find_anbieter_bp  # Importiere das find-anbieter Blueprint
 from flask_cors import CORS  # Importiere Flask-CORS
 
 app = Flask(__name__)
-CORS(app)  # CORS für alle Routen aktivieren
+
+# CORS für alle Routen und nur für localhost:3000 erlauben
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}}, supports_credentials=True)
 
 # Registriere die Blueprints
 app.register_blueprint(count_pages_bp)
-app.register_blueprint(search_bp)
+app.register_blueprint(find_anbieter_bp)
 
 # Route für die Startseite
 @app.route('/')
 def home():
-    return "Welcome to the API! Use the /process_data or /count-pages endpoint to interact with the API."
+    return "Welcome to the API! Use the /process_data, /count-pages, or /find-anbieter endpoint to interact with the API."
 
 # Flask-Endpunkt für die Verarbeitung der Daten aus der API
 @app.route('/process_data', methods=['GET'])

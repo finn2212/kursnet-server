@@ -33,7 +33,13 @@ def count_pages():
             data = response.json()
             total_pages = data.get('page', {}).get('totalPages', 0)
             total_elements = data.get('page', {}).get('totalElements', 0)
-            return jsonify({"total_pages": total_pages, "total_elements": total_elements})
+            
+            # Sende sowohl die API-Antwort als auch die berechneten Werte zurück
+            return jsonify({
+                "total_pages": total_pages,
+                "total_elements": total_elements,
+                "full_response": data  # Das gesamte API-Objekt wird hier zurückgegeben
+            })
         else:
             return jsonify({"error": f"Fehler: {response.status_code} - {response.text}"}), response.status_code
 
