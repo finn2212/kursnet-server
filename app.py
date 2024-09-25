@@ -7,8 +7,8 @@ from flask_cors import CORS  # Importiere Flask-CORS
 
 app = Flask(__name__)
 
-# CORS für alle Routen und nur für localhost:3000 erlauben
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}}, supports_credentials=True)
+# CORS settings: Allow only localhost:3000, dev-dela.xml-config-kursnet.de, and dela.xml-config-kursnet.de
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://dev-dela.xml-config-kursnet.de", "https://dela.xml-config-kursnet.de"]}}, supports_credentials=True)
 
 # Registriere die Blueprints
 app.register_blueprint(count_pages_bp)
