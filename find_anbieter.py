@@ -24,7 +24,7 @@ def process_anbieter_data(anbieter):
             "id": anbieter['id'],
             "name": anbieter['name'],
             "telefonvorwahl": anbieter.get('telefonVorwahl', None),
-            "telefondurchwahl": anbieter.get('telefondurchwahl', None),
+            "telefondurchwahl": anbieter.get('telefonDurchwahl', None),
             "homepage": anbieter.get('homepage', None),
             "email": anbieter.get('email', None)
         }
@@ -34,7 +34,7 @@ def process_anbieter_data(anbieter):
         return {"error": str(e)}
 
 # Funktion zum Abrufen von Daten für eine Anbieter-ID mit Retry-Mechanismus
-def fetch_anbieter_data(anbieter_id, clientId, base_url, headers, retries=3):
+def fetch_anbieter_data(anbieter_id, clientId, base_url, headers, retries=5):
     params = {"ban": anbieter_id}
     logging.info(f"Fetching data for Anbieter-ID: {anbieter_id}")
     
@@ -42,7 +42,7 @@ def fetch_anbieter_data(anbieter_id, clientId, base_url, headers, retries=3):
         total=retries,  # Anzahl der Wiederholungen
         status_forcelist=[429, 500, 502, 503, 504],  # Fehler-Codes, bei denen wiederholt wird
         method_whitelist=["GET"],  # Nur für GET-Methoden anwenden
-        backoff_factor=1  # Wartezeit zwischen den Wiederholungen (z.B. 1 Sekunde, 2 Sekunden, usw.)
+        backoff_factor=2  # Wartezeit zwischen den Wiederholungen (z.B. 1 Sekunde, 2 Sekunden, usw.)
     )
     
     adapter = HTTPAdapter(max_retries=retry_strategy)
@@ -77,7 +77,7 @@ def find_anbieter():
         headers = {"X-API-Key": clientId}
 
         last_successful_id = None  # Speichert die letzte erfolgreiche Anbieter-ID
-        max_workers = 10  # Anzahl gleichzeitiger Threads für parallele Anfragen
+        max_workers = 20  # Anzahl gleichzeitiger Threads für parallele Anfragen
         
         # Thread-Pool für parallele Verarbeitung
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
