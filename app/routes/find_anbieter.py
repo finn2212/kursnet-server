@@ -7,6 +7,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from apscheduler.schedulers.background import BackgroundScheduler
+from app.jobs.anbieter_job import find_anbieter, start_find_anbieter_manually, schedule_find_anbieter_job
+import threading
 
 # Blueprint für die find-anbieter-Route
 find_anbieter_bp = Blueprint('find_anbieter', __name__)
@@ -67,6 +70,41 @@ def fetch_anbieter_data(anbieter_id, clientId, base_url, headers, retries=5):
     
     except requests.exceptions.ReadTimeout:
         return f"Anbieter-ID {anbieter_id}: Timeout-Fehler."
+
+# Route to manually trigger the Anbieter job
+@find_anbieter_bp.route('/manual-anbieter-job', methods=['POST'])
+def manual_anbieter_job():
+    try:
+        data = request.get_json()
+        start_id = data.get('start_id', 1000)
+        end_id = data.get('end_id', 2000)
+
+        # Start the job in a separate thread
+        job_thread = threading.Thread(target=start_find_anbieter_manually, args=(start_id, end_id))
+        job_thread.start()
+
+        # Return response immediately without waiting for the job to complete
+        return jsonify({"status": "Job started manually", "start_id": start_id, "end_id": end_id}), 200
+
+    except Exception as e:
+        logging.error(f"Error in manual_anbieter_job: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+# Route to schedule the Anbieter job
+@find_anbieter_bp.route('/schedule-anbieter-job', methods=['POST'])
+def schedule_anbieter_job():
+    try:
+        data = request.get_json()
+        start_id = data.get('start_id', 1000)
+        end_id = data.get('end_id', 2000)
+
+        # Schedule the Anbieter job
+        schedule_find_anbieter_job(start_id, end_id)
+        return jsonify({"status": "Job scheduled", "start_id": start_id, "end_id": end_id}), 200
+
+    except Exception as e:
+        logging.error(f"Error in schedule_anbieter_job: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 # Neue Route /find-anbieter mit Parallelisierung und Retry
 @find_anbieter_bp.route('/find-anbieter', methods=['GET'])
