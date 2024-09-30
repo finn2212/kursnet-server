@@ -1,4 +1,4 @@
-from supabase_config import supabase
+from app.config.supabase_config import supabase
 from datetime import datetime
 
 # Asynchronous function for inserting data

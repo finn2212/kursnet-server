@@ -17,11 +17,11 @@ def create_app():
 
     # Register Blueprints
     from app.routes.count_pages import count_pages_bp
-    from app.routes.find_anbieter import find_anbieter_bp
+    from app.routes.shedule_anbieter_job import shedule_anbieter_job_bp
     from app.routes.process_data import process_data_bp
     
     app.register_blueprint(count_pages_bp)
-    app.register_blueprint(find_anbieter_bp)
+    app.register_blueprint(shedule_anbieter_job_bp)
     app.register_blueprint(process_data_bp)
 
     # Add more Blueprints as needed
